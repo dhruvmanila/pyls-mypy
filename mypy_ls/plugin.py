@@ -1,11 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-File that contains the pyls plugin mypy-ls.
-
-Created on Fri Jul 10 09:53:57 2020
-
-@author: Richard Kellnberger
-"""
 import re
 import tempfile
 import os
@@ -110,11 +102,12 @@ def pyls_lint(config: Config, workspace: Workspace, document: Document,
         List of the linting data.
 
     """
-    settings = config.plugin_settings('mypy-ls')
+    settings = config.plugin_settings('pyls_mypy')
     live_mode = settings.get('live_mode', True)
-    args = ['--incremental',
-            '--show-column-numbers',
-            '--follow-imports', 'silent']
+    args = settings.get('args', [])
+    args.extend(
+        ['--incremental', '--show-column-numbers', '--follow-imports', 'silent']
+    )
 
     global tmpFile
     if live_mode and not is_saved and tmpFile:
@@ -160,7 +153,7 @@ def pyls_settings(config: Config) -> Dict[str, Dict[str, Dict[str, str]]]:
 
     """
     configuration = init(config._root_path)
-    return {"plugins": {"mypy-ls": configuration}}
+    return {"plugins": {"pyls_mypy": configuration}}
 
 
 def init(workspace: str) -> Dict[str, str]:
